@@ -1,0 +1,24 @@
+# CORRESPONDING CLI COMMAND
+# docker run --name postgres `
+# --detach `
+# --mount type=volume,src=postgres-vol,target=/var/lib/postgresql/data `
+# --network storage-net --network-alias postgres `
+# --publish 5432:5432 `
+# --env POSTGRES_PASSWORD=password `
+# postgres
+
+# ACCESS DB THROUGH CLI WITH POSTGRES' PSQL
+# docker exec -it <container-id> psql -U postgres
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - postgres-vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres-vol:
