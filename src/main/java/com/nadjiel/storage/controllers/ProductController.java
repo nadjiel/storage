@@ -8,9 +8,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class ProductController {
@@ -25,6 +27,22 @@ public class ProductController {
         BeanUtils.copyProperties(record, model);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(model));
+    }
+
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductModel>> readAll() {
+        return ResponseEntity.status(HttpStatus.OK).body(repository.findAll());
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<Object> readOne(@PathVariable(value = "id") UUID id) {
+        Optional<ProductModel> productO = repository.findById(id);
+
+        if(productO.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(productO.get());
     }
 
 }
