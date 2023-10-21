@@ -36,13 +36,28 @@ public class ProductController {
 
     @GetMapping("/products/{id}")
     public ResponseEntity<Object> readOne(@PathVariable(value = "id") UUID id) {
-        Optional<ProductModel> productO = repository.findById(id);
+        Optional<ProductModel> product = repository.findById(id);
 
-        if(productO.isEmpty()) {
+        if(product.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(productO.get());
+        return ResponseEntity.status(HttpStatus.OK).body(product.get());
+    }
+
+    @PutMapping("/products/{id}")
+    public ResponseEntity<Object> update(@PathVariable(value = "id") UUID id, @RequestBody @Valid ProductRecordDto record) {
+        Optional<ProductModel> product = repository.findById(id);
+
+        if(product.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+        }
+
+        var model = product.get();
+
+        BeanUtils.copyProperties(record, model);
+
+        return ResponseEntity.status(HttpStatus.OK).body(repository.save(model));
     }
 
 }
