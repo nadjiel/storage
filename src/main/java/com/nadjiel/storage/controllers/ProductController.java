@@ -39,7 +39,7 @@ public class ProductController {
         Optional<ProductModel> product = repository.findById(id);
 
         if(product.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found!");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(product.get());
@@ -50,7 +50,7 @@ public class ProductController {
         Optional<ProductModel> product = repository.findById(id);
 
         if(product.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found!");
         }
 
         var model = product.get();
@@ -58,6 +58,19 @@ public class ProductController {
         BeanUtils.copyProperties(record, model);
 
         return ResponseEntity.status(HttpStatus.OK).body(repository.save(model));
+    }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Object> delete(@PathVariable(value = "id") UUID id) {
+        Optional<ProductModel> product = repository.findById(id);
+
+        if(product.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found!");
+        }
+
+        repository.delete(product.get());
+
+        return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully.");
     }
 
 }
